@@ -81,6 +81,7 @@ namespace PokemonReviewApp.Tests.Repository
             //Assert
             result.Should().NotBe(0);
             result.Should().BeInRange(1, 10);
+            result.Should();
         }
     }
 }
