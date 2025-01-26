@@ -66,5 +66,29 @@ namespace PokemonReviewApp.Tests.Controller
             //Assert
             result.Should().NotBeNull();
         }
+
+        [Fact]
+        public void PokemonController_CreatePokemon()
+        {
+            //Arrange
+            int ownerId = 1;
+            int catId = 2;
+            int Id = 1;
+            var pokemonMap = A.Fake<Pokemon>();
+            var pokemon = A.Fake<Pokemon>();
+            var pokemonCreate = A.Fake<PokemonDto>();
+            var pokemons = A.Fake<ICollection<PokemonDto>>();
+            var pokmonList = A.Fake<IList<PokemonDto>>(); 
+            A.CallTo(() => _pokemonRepository.GetPokemon(Id)).Returns(pokemon);
+            A.CallTo(() => _mapper.Map<Pokemon>(pokemonCreate)).Returns(pokemon);
+            A.CallTo(() => _pokemonRepository.CreatePokemon(ownerId, catId, pokemonMap)).Returns(true);
+            var controller = new PokemonController(_pokemonRepository, _reviewRepository, _mapper);
+
+            //Act
+            var result = controller.CreatePokemon(ownerId, catId, pokemonCreate);
+
+            //Assert
+            result.Should().NotBeNull();
+        }
     }
 }
