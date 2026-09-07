@@ -25,10 +25,26 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 var app = builder.Build();
+
+// Automatically create database and run migrations
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+        db.Database.Migrate();
+        Console.WriteLine("✓ Database connected and migrated successfully!");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"✗ Database connection failed: {ex.Message}");
+    Console.WriteLine("Check your PostgreSQL connection string and credentials in appsettings.json");
+}
 
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
     SeedData(app);
